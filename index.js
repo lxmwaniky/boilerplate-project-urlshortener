@@ -3,13 +3,16 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const { MongoClient } = require('mongodb');
-
-const client = new MongoClient(process.env.MONGODB_URL)
+const client = new MongoClient(process.env.MONGODB_URL);
+const db = client.db('urlshortener');
+const urls = db.collection('urls');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 app.use('/public', express.static(`${process.cwd()}/public`));
 
@@ -18,7 +21,8 @@ app.get('/', function(req, res) {
 });
 
 // Your first API endpoint
-app.get('/api/hello', function(req, res) {
+app.post('/api/shorturl', function(req, res) {
+  console.log(req.body);
   res.json({ greeting: 'hello API' });
 });
 
